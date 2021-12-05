@@ -5,12 +5,7 @@ def drawBox(img, bbox):
   x, y, w, h = int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])
   return cv.rectangle(img, (x, y), ((x + w), (y + h)), (255, 0, 255), 3, 1)
 
-cap = cv.VideoCapture('http://169.254.241.82:8080/?action=stream')
-tracker = cv.legacy_TrackerMOSSE.create()
-x = 0
-y = 0
-while True:
-  ret, img = cap.read()
+def filtrado(img):
   blank = np.zeros(img.shape, dtype='uint8')
   gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
   gray = 255 - gray
@@ -21,20 +16,28 @@ while True:
   contorno, j = cv.findContours(thresh, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
   cv.drawContours(blank, contorno, -1, (255, 255, 255), 1)
   gris = cv.cvtColor(blank, cv.COLOR_BGR2GRAY)
-  if(x+y == 0):
+  return gris
+
+def detectarPunta(gris):
     for y,pixel in enumerate(gris):
-      s = pixel.nonzero()[0]
-      if(len(s) > 0):
-        x = s[0]
-        print(x)
-        r = 50
-        rect = (x - r // 2, y - r // 2, r, r)
-        tracker.init(blank, rect)
-        break
+        s = pixel.nonzero()[0]
+        if(len(s) > 0):
+            x = s[0]
+            r = 50
+            break
+    return (x,y)
+cap = cv.VideoCapture('http://169.254.241.82:8080/?action=stream')
+tracker = cv.legacy_TrackerMOSSE.create()
+x = 0
+y = 0
+while True:
+  ret, frame = cap.read()
+  blank = filtrado(frame)
+  if(x+y == 0):
+      x,y = detectarPunta(blank);
+      rect = (x - r // 2, y - r // 2, r, r)
+      tracker.init(blank, rect)
   succes, bbox = tracker.update(blank)
-  print(bbox[0:2])
-  x = int(bbox[0])
-  y = int(bbox[1])
   if succes:
     blank = drawBox(blank, bbox)
   else:
