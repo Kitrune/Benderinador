@@ -6,17 +6,17 @@ def drawBox(img, bbox):
   return cv.rectangle(img, (x, y), ((x + w), (y + h)), (255, 0, 255), 3, 1)
 
 def filtrado(img):
-  blank = np.zeros(img.shape, dtype='uint8')
-  gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-  gray = 255 - gray
-  cv.imshow('a', gray)
-  mediana = cv.medianBlur(gray, 25)
-  ret, thresh = cv.threshold(mediana, 160, 255, cv.THRESH_BINARY)
-  cv.imshow('t', thresh)
-  contorno, j = cv.findContours(thresh, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
-  cv.drawContours(blank, contorno, -1, (255, 255, 255), 1)
-  gris = cv.cvtColor(blank, cv.COLOR_BGR2GRAY)
-  return gris
+    blank = np.zeros(img.shape, dtype='uint8')
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    gray = 255 - gray
+    cv.imshow('a', gray)
+    mediana = cv.medianBlur(gray, 25)
+    ret, thresh = cv.threshold(mediana, 160, 255, cv.THRESH_BINARY)
+    cv.imshow('t', thresh)
+    contorno, j = cv.findContours(thresh, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+    cv.drawContours(blank, contorno, -1, (255, 255, 255), 1)
+    gris = cv.cvtColor(blank, cv.COLOR_BGR2GRAY)
+    return gris
 
 def detectarPunta(gris):
     for y,pixel in enumerate(gris):
@@ -31,19 +31,18 @@ tracker = cv.legacy_TrackerMOSSE.create()
 x = 0
 y = 0
 while True:
-  ret, frame = cap.read()
-  blank = filtrado(frame)
-  if(x+y == 0):
-      x,y = detectarPunta(blank);
-      rect = (x - r // 2, y - r // 2, r, r)
-      tracker.init(blank, rect)
-  succes, bbox = tracker.update(blank)
-  if succes:
-    blank = drawBox(blank, bbox)
-  else:
-    cv.putText(img, "Lost", (75, 75), cv.FONT_HERSHEY_SIMPLEX, 0.7, (100, 255, 1000), 2)
-
-  cv.circle(blank,(x,y),10, (0,255,0),1)
-  cv.imshow('con', blank)
-  if cv.waitKey(1) == 27:
-    exit(0)
+    ret, frame = cap.read()
+    blank = filtrado(frame)
+    if(x+y == 0):
+        x,y = detectarPunta(blank);
+        rect = (x - r // 2, y - r // 2, r, r)
+        tracker.init(blank, rect)
+    succes, bbox = tracker.update(blank)
+    if succes:
+        blank = drawBox(blank, bbox)
+    else:
+        cv.putText(img, "Lost", (75, 75), cv.FONT_HERSHEY_SIMPLEX, 0.7, (100, 255, 1000), 2)
+    cv.circle(blank,(x,y),10, 120,1)
+    cv.imshow('con', blank)
+    if cv.waitKey(1) == 27:
+        exit(0)
