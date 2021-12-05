@@ -39,8 +39,10 @@ while True:
     ret, frame = cap.read()
     blank = filtrado(frame)
     if(x+y == 0):
-        x,y = detectarPunta(blank);
+        x,y = detectarPunta(blank)
+        # Hacer el rectangulo alrededor de las coords de la punta del cable.
         rect = (x - r // 2, y - r // 2, r, r)
+        # Trackear la punta del cable.
         tracker.init(blank, rect)
     succes, bbox = tracker.update(blank)
     if succes:
