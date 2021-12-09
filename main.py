@@ -4,7 +4,8 @@ from img_processing.procesado import filtrado, drawBox, detectarPunta, encontrar
 x,y = (0,0)
 # Radio de la caja que se mostrara alrededor del punto del tracking.
 r = 50
-cap = cv.VideoCapture('BenderV2_no_luz.mp4')
+#cap = cv.VideoCapture('BenderV2_no_luz.mp4')
+cap = cv.VideoCapture('BenderV2_Luz.mp4')
 #tracker = cv.legacy_TrackerMOSSE.create()
 tracker = cv.TrackerCSRT.create()
 while True:

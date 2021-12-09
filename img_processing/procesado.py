@@ -36,7 +36,9 @@ def detectarPunta(gris):
 def encontrar_y(img):
     # Buscar el primer pixel de cada columnda de la imagen.
     for y, pixel in enumerate(img):
-        gris = np.mean(pixel[0])
-        if(gris > 0):
-            return y
-
+        # Buscar en los primeros 50 pixeles.
+        pixel = pixel[0:25]
+        for p in pixel:
+            gris = np.mean(p)
+            if(gris > 0):
+                return y
