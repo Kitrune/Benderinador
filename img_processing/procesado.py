@@ -27,6 +27,7 @@ def detectarPunta(gris):
     x,y = (0,0)
     # Buscar en cada columna de la imagen.
     for y,pixel in enumerate(gris):
+        pixel = pixel[0:-100]
         s = pixel.nonzero()[0]
         if(len(s) > 0):
             x = s[0]
