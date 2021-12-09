@@ -9,15 +9,15 @@ accion = b'0'
 # Radio de la caja que se mostrara alrededor del punto del tracking.
 r = 50
 #cap = cv.VideoCapture('BenderV2_no_luz.mp4')
-cap = cv.VideoCapture('BenderV2_Luz.mp4')
-#cap = cv.VideoCapture('http://raspberrypi.local:8080/?action=stream')
-#tracker = cv.legacy_TrackerMOSSE.create()
-tracker = cv.TrackerCSRT.create()
+#cap = cv.VideoCapture('BenderV2_Luz.mp4')
+cap = cv.VideoCapture('http://raspberrypi.local:8080/?action=stream')
+tracker = cv.legacy_TrackerMOSSE.create()
+#tracker = cv.TrackerCSRT.create()
 
 # Conexion TCP
 PORT = 22333
 hostname = socket.gethostname()
-IP = socket.gethostbyname(hostname)
+IP = "192.168.3.25"
 print("IP:", IP, ", Puerto:",PORT)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -88,6 +88,7 @@ while True:
     # Texto del angulo
     cv.putText(frame, f"{angulo:.2f} grados", (x_ref + 20, y_ref), cv.FONT_HERSHEY_DUPLEX, 1, (255, 255, 255), 1)
     cv.imshow('preview sensado', frame)
+    cv.imshow("dilan gei", blank)
     
     if cv.waitKey(1) == 27:
         conn.close()
