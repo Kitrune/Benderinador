@@ -7,7 +7,7 @@ x_ref = 0
 r = 50
 #cap = cv.VideoCapture('BenderV2_no_luz.mp4')
 cap = cv.VideoCapture('BenderV2_Luz.mp4')
-#cap = cv.VideoCapture('http://169.254.241.82:8080/?action=stream')
+#cap = cv.VideoCapture('http://raspberrypi.local:8080/?action=stream')
 #tracker = cv.legacy_TrackerMOSSE.create()
 tracker = cv.TrackerCSRT.create()
 while True:
@@ -29,15 +29,21 @@ while True:
         x = int(bbox[0])+r//2
         y = int(bbox[1])+r//2
     else:
-        cv.putText(blank, "Lost", (75, 75), cv.FONT_HERSHEY_SIMPLEX, 0.7, (100, 255, 1000), 2)
+        cv.putText(blank, "Lost", (75, 75), cv.FONT_HERSHEY_PLAIN, 0.7, (100, 255, 1000), 2)
         x,y = (0,0)
-    #cv.line(blank,(x,y),(x_ref,y_ref),(255,0,0),5)
-    # Circulo en la punta
-    cv.circle(blank,(x,y), 10, (0,0,255),1)
-    # Circulo en la referencia
-    cv.circle(blank,(x_ref,y_ref), 5, (0,255,0),1)
-    cv.imshow('preview sensado', blank)
-    angulo = print(calcular_angulo(x,y,x_ref,y_ref))
+    angulo = calcular_angulo(x,y,x_ref,y_ref)
+    # linea del la punta al punto de referencia
+    cv.line(frame,(x,y),(x_ref,y_ref),(255,0,0),2)
+    # linea de referencia
+    cv.line(frame,(x_ref,80),(x_ref,y_ref),(150,0,0),2)
+    # Punto en la punta
+    cv.circle(frame,(x,y), 5, (0,0,255),10)
+    # Punto en la referencia
+    cv.circle(frame,(x_ref,y_ref), 5, (0,255,0),10)
+    # Texto del angulo
+    cv.putText(frame, f"{angulo:.2f} grados", (x_ref + 20, y_ref), cv.FONT_HERSHEY_DUPLEX, 1, (255, 255, 255), 1)
+    cv.imshow('preview sensado', frame)
+    
     if cv.waitKey(1) == 27:
         exit(0)
 print("El video acabo o se perdio la conexion con el flujo de streaming")
