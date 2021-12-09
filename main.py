@@ -1,6 +1,4 @@
 import cv2 as cv
-import numpy as np
-import math
 from img_processing.procesado import filtrado, drawBox, detectarPunta, encontrar_y
 from img_processing.calculos import calcular_angulo
 x,y = (0,0)
