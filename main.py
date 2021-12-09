@@ -3,7 +3,7 @@ import socket
 from img_processing.procesado import filtrado, drawBox, detectarPunta, encontrar_y
 from img_processing.calculos import calcular_angulo
 setpoint = 45
-x,y = (0,0)
+x,y = (-1,-1)
 x_ref = 0
 accion = b'0'
 # Radio de la caja que se mostrara alrededor del punto del tracking.
@@ -34,7 +34,7 @@ while True:
     if frame is None:
         break
     blank = filtrado(frame)
-    if(x+y == 0):
+    if(x+y == -2):
         x,y = detectarPunta(blank)
         # Hacer el rectangulo alrededor de las coords de la punta del cable.
         rect = (x - r//2, y - r//2, r, r)
