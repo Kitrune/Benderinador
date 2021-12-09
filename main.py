@@ -1,8 +1,11 @@
 import cv2 as cv
+import socket
 from img_processing.procesado import filtrado, drawBox, detectarPunta, encontrar_y
 from img_processing.calculos import calcular_angulo
+setpoint = 45
 x,y = (0,0)
 x_ref = 0
+accion = b'0'
 # Radio de la caja que se mostrara alrededor del punto del tracking.
 r = 50
 #cap = cv.VideoCapture('BenderV2_no_luz.mp4')
@@ -10,7 +13,23 @@ cap = cv.VideoCapture('BenderV2_Luz.mp4')
 #cap = cv.VideoCapture('http://raspberrypi.local:8080/?action=stream')
 #tracker = cv.legacy_TrackerMOSSE.create()
 tracker = cv.TrackerCSRT.create()
+
+# Conexion TCP
+PORT = 22333
+hostname = socket.gethostname()
+IP = socket.gethostbyname(hostname)
+print("IP:", IP, ", Puerto:",PORT)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+s.bind((IP,PORT))
+s.listen(1)
+conn, addr = s.accept()
+conn.setblocking(0)
+# Conexion TCP establecida
 while True:
+    # ---
+    # Procesado de imagen
+    # ---
     ret, frame = cap.read()
     if frame is None:
         break
@@ -32,6 +51,32 @@ while True:
         cv.putText(blank, "Lost", (75, 75), cv.FONT_HERSHEY_PLAIN, 0.7, (100, 255, 1000), 2)
         x,y = (0,0)
     angulo = calcular_angulo(x,y,x_ref,y_ref)
+
+    # ---
+    # Ordenes al motor a pasos
+    # ---
+
+    # Se alcanzo el setpoint?
+    if(angulo >= setpoint):
+        # Si, Entonces el motor queda en standby
+        accion = b'0' 
+    else:
+        # No, entonces el motor avanza un poco
+        accion = b'1'
+
+    # Se envia la orden al motor
+    try:
+        data = conn.recv(3)
+        print("Enviando ordenes a motor")
+        conn.sendall(accion)
+    except BlockingIOError:
+        # El motor esta ocupado, por lo que no puede recibir ordenes
+        print("Motor ocupado")
+
+    # ---
+    # Graficos
+    # ---
+
     # linea del la punta al punto de referencia
     cv.line(frame,(x,y),(x_ref,y_ref),(255,0,0),2)
     # linea de referencia
@@ -45,5 +90,6 @@ while True:
     cv.imshow('preview sensado', frame)
     
     if cv.waitKey(1) == 27:
+        conn.close()
         exit(0)
 print("El video acabo o se perdio la conexion con el flujo de streaming")
