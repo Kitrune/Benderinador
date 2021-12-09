@@ -31,7 +31,9 @@ while True:
     else:
         cv.putText(blank, "Lost", (75, 75), cv.FONT_HERSHEY_SIMPLEX, 0.7, (100, 255, 1000), 2)
         x,y = (0,0)
+    # Circulo en la punta
     cv.circle(blank,(x,y), 10, (0,0,255),1)
+    # Circulo en la referencia
     cv.circle(blank,(x_ref,y_ref), 5, (0,255,0),1)
     cv.imshow('preview sensado', blank)
     angulo = print(calcular_angulo(x,y,x_ref,y_ref))
