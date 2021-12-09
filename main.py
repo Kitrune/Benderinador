@@ -9,6 +9,7 @@ x_ref = 0
 r = 50
 #cap = cv.VideoCapture('BenderV2_no_luz.mp4')
 cap = cv.VideoCapture('BenderV2_Luz.mp4')
+#cap = cv.VideoCapture('http://169.254.241.82:8080/?action=stream')
 #tracker = cv.legacy_TrackerMOSSE.create()
 tracker = cv.TrackerCSRT.create()
 while True:
