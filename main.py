@@ -26,11 +26,12 @@ while True:
     succes, bbox = tracker.update(blank)
     if succes:
         blank = drawBox(blank, bbox)
-        x = int(bbox[0])
-        y = int(bbox[1])
+        x = int(bbox[0])+r//2
+        y = int(bbox[1])+r//2
     else:
         cv.putText(blank, "Lost", (75, 75), cv.FONT_HERSHEY_SIMPLEX, 0.7, (100, 255, 1000), 2)
         x,y = (0,0)
+    #cv.line(blank,(x,y),(x_ref,y_ref),(255,0,0),5)
     # Circulo en la punta
     cv.circle(blank,(x,y), 10, (0,0,255),1)
     # Circulo en la referencia
